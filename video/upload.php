@@ -22,9 +22,19 @@ $error   = '';
 $success = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Detect PHP silently dropping POST when file exceeds post_max_size
+    $contentLength = (int)($_SERVER['CONTENT_LENGTH'] ?? 0);
+    $postMaxBytes  = (int)ini_get('post_max_size') * 1024 * 1024;
+    if ($contentLength > $postMaxBytes && empty($_POST)) {
+        $fileSizeMB  = round($contentLength / 1024 / 1024, 1);
+        $limitMB     = round($postMaxBytes  / 1024 / 1024, 0);
+        $error = "Your file is {$fileSizeMB} MB which exceeds the server limit of {$limitMB} MB. Please use a smaller video file.";
+    }
+
+    if (!$error) {
     $title       = trim($_POST['title']       ?? '');
     $description = trim($_POST['description'] ?? '');
-    $category    = $_POST['category'] === 'non-veg' ? 'non-veg' : 'veg';
+    $category    = (($_POST['category'] ?? '') === 'non-veg') ? 'non-veg' : 'veg';
     $ingredients = trim($_POST['ingredients'] ?? '');   // stored as JSON string
     $steps       = trim($_POST['steps']       ?? '');   // stored as JSON string
 
@@ -33,11 +43,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $error = 'Title must be at least 3 characters.';
     } elseif (empty($_FILES['video']['name'])) {
         $error = 'Please select a video file to upload.';
+    } elseif ($_FILES['video']['error'] === UPLOAD_ERR_INI_SIZE || $_FILES['video']['error'] === UPLOAD_ERR_FORM_SIZE) {
+        $error = 'The video file is too large. Maximum allowed size is 512 MB.';
     } else {
         // Upload video
         $videoPath = saveUploadedFile($_FILES['video'], 'video');
         if (!$videoPath) {
-            $error = 'Invalid video file. Allowed: MP4, WebM, OGG, MOV (max 500 MB).';
+            $error = 'Invalid video file. Allowed: MP4, WebM, OGG, MOV.';
         } else {
             // Optional thumbnail
             $thumbPath = null;
@@ -72,6 +84,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
     }
+    } // end if(!$error) for size check
 }
 
 $user = getCurrentUser();
