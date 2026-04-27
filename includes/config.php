@@ -2,7 +2,7 @@
 // ─── CookStream Database Configuration ───────────────────────────────────────
 define('DB_HOST', 'localhost');
 define('DB_USER', 'root');
-define('DB_PASS', '');          // Change if your MySQL has a password
+define('DB_PASS', 'password');          // Change if your MySQL has a password
 define('DB_NAME', 'cookstream');
 
 define('SITE_URL',  'http://localhost/cookstream');

@@ -5,9 +5,9 @@
 
 define('SMTP_HOST', 'smtp.gmail.com');
 define('SMTP_PORT', 587);
-define('SMTP_USER', 'your_email@gmail.com');      // ← Replace with your Gmail
-define('SMTP_PASS', 'your_app_password_here');    // ← Replace with Gmail App Password
-define('SMTP_FROM', 'your_email@gmail.com');      // ← Same as SMTP_USER
+define('SMTP_USER', 'marimuthuprakash360@gmail.com'); // ← Your Gmail
+define('SMTP_PASS', 'oizw mbpb fkwd ysdz');
+define('SMTP_FROM', 'marimuthuprakash360@gmail.com'); // ← Same as SMTP_USER
 define('SMTP_NAME', 'CookStream');
 
 /**
