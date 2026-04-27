@@ -26,7 +26,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif (strtotime($user['otp_expires_at']) < time()) {
         $error = 'OTP has expired. Please request a new one.';
     } else {
-        $conn->prepare("UPDATE users SET is_verified=1, otp=NULL, otp_expires_at=NULL WHERE id=?")->execute() || true;
         $upd = $conn->prepare("UPDATE users SET is_verified=1, otp=NULL, otp_expires_at=NULL WHERE id=?");
         $upd->bind_param('i', $user['id']);
         $upd->execute();
@@ -65,15 +64,40 @@ if (isset($_GET['resend']) && $email) {
     <?php if ($error): ?><div class="alert alert-error"><?= $error ?></div><?php endif; ?>
     <?php if ($success): ?><div class="alert alert-success"><?= $success ?></div><?php endif; ?>
 
-    <form method="POST">
+    <form method="POST" id="otp-form">
       <div class="otp-inputs">
         <?php for ($i = 0; $i < 6; $i++): ?>
-          <input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]" autocomplete="off">
+          <input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]" autocomplete="off" class="otp-box">
         <?php endfor; ?>
         <input type="hidden" name="otp" id="otp-hidden">
       </div>
       <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center">Verify →</button>
     </form>
+    <script>
+    (function(){
+      const boxes = document.querySelectorAll('.otp-box');
+      const hidden = document.getElementById('otp-hidden');
+      function sync(){ hidden.value = [...boxes].map(b=>b.value).join(''); }
+      boxes.forEach((box, i) => {
+        box.addEventListener('input', () => {
+          box.value = box.value.replace(/\D/,'').slice(-1);
+          sync();
+          if (box.value && i < boxes.length - 1) boxes[i+1].focus();
+        });
+        box.addEventListener('keydown', e => {
+          if (e.key === 'Backspace' && !box.value && i > 0) { boxes[i-1].focus(); sync(); }
+        });
+        box.addEventListener('paste', e => {
+          const txt = (e.clipboardData||window.clipboardData).getData('text').replace(/\D/g,'');
+          boxes.forEach((b,j) => b.value = txt[j]||'');
+          sync();
+          e.preventDefault();
+        });
+      });
+      document.getElementById('otp-form').addEventListener('submit', () => sync());
+      if (boxes.length) boxes[0].focus();
+    })();
+    </script>
     <p class="form-footer" style="margin-top:16px">
       Didn't receive it? <a href="?resend=1">Resend OTP</a>
     </p>
