@@ -148,19 +148,20 @@ $uploaded    = isset($_GET['uploaded']);
       margin-right:14px;
     }
 
-    /* Buttons row */
+    /* ── Buttons row ── */
     .action-row {
       display:flex;
       gap:10px;
       flex-wrap:wrap;
       margin-top:14px;
+      align-items:center;
     }
 
     .action-btn {
       display:inline-flex;
       align-items:center;
-      gap:6px;
-      padding:9px 18px;
+      gap:7px;
+      padding:9px 20px;
       border-radius:999px;
       border:1px solid rgba(255,255,255,.12);
       background:rgba(255,255,255,.05);
@@ -171,10 +172,61 @@ $uploaded    = isset($_GET['uploaded']);
       cursor:pointer;
       transition:all .2s;
       text-decoration:none;
+      white-space:nowrap;
     }
-    .action-btn:hover { background:rgba(255,255,255,.1); border-color:rgba(255,255,255,.25); }
-    .action-btn.liked    { background:rgba(239,68,68,.18);  border-color:#ef4444; color:#fca5a5; }
-    .action-btn.subbed   { background:rgba(34,197,94,.18);  border-color:#22c55e; color:#86efac; }
+    .action-btn:hover { background:rgba(255,255,255,.1); border-color:rgba(255,255,255,.25); transform:translateY(-1px); }
+    .action-btn:active { transform:translateY(0); }
+
+    /* Like button states */
+    .like-btn-inner { display:inline-flex; align-items:center; gap:7px; pointer-events:none; }
+    .heart-icon { width:18px; height:18px; flex-shrink:0; transition:transform .15s; }
+    #like-btn.liked  { background:rgba(239,68,68,.18); border-color:#ef4444; color:#fca5a5; }
+    #like-btn.liked .heart-icon { transform:scale(1.15); }
+    #like-btn:not(.liked):hover .heart-icon { transform:scale(1.1); }
+
+    /* Subscribe button states */
+    #sub-btn {
+      background: linear-gradient(135deg, hsl(25,100%,50%), hsl(10,90%,50%));
+      border: none;
+      color: #fff;
+      box-shadow: 0 4px 14px hsla(25,100%,50%,.35);
+      font-size:.9rem;
+      padding:10px 22px;
+    }
+    #sub-btn:hover { box-shadow:0 6px 20px hsla(25,100%,50%,.5); transform:translateY(-2px); }
+    #sub-btn.subbed {
+      background: rgba(34,197,94,.15);
+      border: 1px solid #22c55e;
+      color: #86efac;
+      box-shadow: 0 4px 14px rgba(34,197,94,.2);
+    }
+    #sub-btn.subbed:hover { box-shadow:0 6px 20px rgba(34,197,94,.35); }
+    #sub-btn.owner-btn {
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(255,255,255,.1);
+      color: rgba(255,255,255,.35);
+      box-shadow: none;
+      cursor: default;
+    }
+    #sub-btn.owner-btn:hover { transform:none; box-shadow:none; }
+
+    /* Bell animation */
+    .bell-icon { display:inline-block; transition:transform .3s; }
+    #sub-btn.subbed .bell-icon { animation:bellRing .4s ease; }
+    @keyframes bellRing {
+      0%   { transform:rotate(0);   }
+      25%  { transform:rotate(20deg); }
+      50%  { transform:rotate(-18deg); }
+      75%  { transform:rotate(12deg); }
+      100% { transform:rotate(0);   }
+    }
+
+    /* Sub count badge */
+    .sub-count {
+      font-size:.75rem;
+      opacity:.6;
+      margin-left:2px;
+    }
 
     /* ── Channel Strip ── */
     .channel-strip {
@@ -185,16 +237,36 @@ $uploaded    = isset($_GET['uploaded']);
       border-top:1px solid rgba(255,255,255,.07);
       border-bottom:1px solid rgba(255,255,255,.07);
       margin:16px 0;
+      flex-wrap:wrap;
     }
     .ch-avatar {
-      width:48px;height:48px;
+      width:52px;height:52px;
       border-radius:50%;
       background:linear-gradient(135deg,hsl(25,100%,55%),hsl(10,90%,55%));
       display:flex;align-items:center;justify-content:center;
-      font-size:1.3rem;font-weight:800;color:#fff;flex-shrink:0;
+      font-size:1.4rem;font-weight:800;color:#fff;flex-shrink:0;
+      box-shadow:0 4px 14px hsla(25,100%,50%,.3);
     }
-    .ch-name { font-size:1rem; font-weight:700; color:#fff; }
-    .ch-subs  { font-size:.8rem; color:rgba(255,255,255,.38); }
+    .ch-info { flex:1; min-width:0; }
+    .ch-name { font-size:1.05rem; font-weight:700; color:#fff; }
+    .ch-subs  { font-size:.8rem; color:rgba(255,255,255,.38); margin-top:2px; }
+
+    /* Toast notification */
+    .action-toast {
+      position:fixed;bottom:30px;right:30px;
+      padding:13px 20px;
+      border-radius:12px;
+      font-weight:600;font-size:.88rem;
+      box-shadow:0 8px 24px rgba(0,0,0,.4);
+      z-index:9999;
+      animation:toastIn .35s cubic-bezier(.23,1,.32,1) both;
+      display:flex;align-items:center;gap:8px;
+      pointer-events:none;
+    }
+    .action-toast.sub-on  { background:rgba(34,197,94,.92); color:#fff; }
+    .action-toast.sub-off { background:rgba(100,100,120,.92); color:#fff; }
+    .action-toast.like-on { background:rgba(239,68,68,.92); color:#fff; }
+    .action-toast.like-off{ background:rgba(100,100,120,.92); color:#fff; }
 
     /* ── Tabs ── */
     .tabs {
@@ -417,34 +489,55 @@ $uploaded    = isset($_GET['uploaded']);
 
     <!-- Action buttons -->
     <div class="action-row">
-      <!-- Like -->
-      <button class="action-btn <?= $userLiked ? 'liked' : '' ?>"
-              id="like-btn"
-              onclick="toggleLike()"
-              <?= $user ? '' : 'onclick="location.href=\'/cookstream/auth/login.php\'"' ?>>
-        <?= $userLiked ? '❤️' : '🤍' ?> <span id="like-count"><?= $likeCount ?></span> Likes
+      <!-- Like / Unlike button with SVG heart -->
+      <button id="like-btn"
+              class="action-btn <?= $userLiked ? 'liked' : '' ?>"
+              onclick="toggleLike()">
+        <span class="like-btn-inner">
+          <svg class="heart-icon" viewBox="0 0 24 24" fill="<?= $userLiked ? '#ef4444' : 'none' ?>"
+               stroke="<?= $userLiked ? '#ef4444' : 'rgba(255,255,255,0.7)' ?>"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+          </svg>
+          <span id="like-count"><?= $likeCount ?></span>
+          <span id="like-label"><?= $userLiked ? 'Unlike' : 'Like' ?></span>
+        </span>
       </button>
 
-      <!-- Subscribe -->
-      <?php if ($user && $user['id'] !== $v['channel_owner_id']): ?>
-      <button class="action-btn <?= $userSubbed ? 'subbed' : '' ?>"
-              id="sub-btn"
-              onclick="toggleSub()">
-        <?= $userSubbed ? '🔔 Subscribed' : '🔔 Subscribe' ?>
-        <span style="opacity:.55;font-size:.78rem">(<?= formatViews($subCount) ?>)</span>
-      </button>
-      <?php endif; ?>
-
-      <a class="action-btn" href="/cookstream/">← Back</a>
+      <a class="action-btn" href="/cookstream/"
+         style="border-color:rgba(255,255,255,.1);color:rgba(255,255,255,.55);">← Back</a>
     </div>
 
-    <!-- Channel strip -->
+    <!-- Channel strip with Subscribe button -->
     <div class="channel-strip">
       <div class="ch-avatar"><?= strtoupper($v['channel_name'][0]) ?></div>
-      <div>
+      <div class="ch-info">
         <div class="ch-name"><?= sanitize($v['channel_name']) ?></div>
-        <div class="ch-subs"><?= formatViews($subCount) ?> subscribers</div>
+        <div class="ch-subs" id="sub-count-strip"><?= formatViews($subCount) ?> subscribers</div>
       </div>
+
+      <?php if (!$user): ?>
+        <!-- Not logged in → redirect to login -->
+        <button id="sub-btn" onclick="location.href='/cookstream/auth/login.php'">
+          <span class="bell-icon">🔔</span> Subscribe
+        </button>
+
+      <?php elseif ($user['id'] === $v['channel_owner_id']): ?>
+        <!-- Own channel → disabled -->
+        <button id="sub-btn" class="owner-btn" disabled>
+          📺 Your Channel
+        </button>
+
+      <?php else: ?>
+        <!-- Other user → subscribe toggle -->
+        <button id="sub-btn"
+                class="<?= $userSubbed ? 'subbed' : '' ?>"
+                onclick="toggleSub()">
+          <span class="bell-icon"><?= $userSubbed ? '🔔' : '🔕' ?></span>
+          <span id="sub-label"><?= $userSubbed ? 'Subscribed' : 'Subscribe' ?></span>
+          <span class="sub-count" id="sub-count-btn"><?= formatViews($subCount) ?></span>
+        </button>
+      <?php endif; ?>
     </div>
 
     <!-- Tabs -->
@@ -573,39 +666,71 @@ function switchTab(name, btn) {
   btn.classList.add('active');
 }
 
-// ── Like
+// ── Toast helper
+function showToast(msg, cls) {
+  document.querySelectorAll('.action-toast').forEach(t => t.remove());
+  const t = document.createElement('div');
+  t.className = 'action-toast ' + cls;
+  t.innerHTML = msg;
+  document.body.appendChild(t);
+  setTimeout(() => { t.style.opacity='0'; t.style.transition='opacity .4s'; setTimeout(()=>t.remove(),400); }, 3000);
+}
+
+// ── Like / Unlike
 async function toggleLike() {
   <?php if (!$user): ?>
     location.href = '/cookstream/auth/login.php'; return;
   <?php endif; ?>
-  const btn = document.getElementById('like-btn');
-  const cnt = document.getElementById('like-count');
-  const res = await fetch('/cookstream/api/like.php', {
+  const btn   = document.getElementById('like-btn');
+  const cnt   = document.getElementById('like-count');
+  const label = document.getElementById('like-label');
+  const svg   = btn.querySelector('.heart-icon');
+
+  const res  = await fetch('/cookstream/api/like.php', {
     method:'POST',
     headers:{'Content-Type':'application/x-www-form-urlencoded'},
     body:'video_id=<?= $id ?>'
   });
   const data = await res.json();
   if (data.liked !== undefined) {
-    cnt.textContent = data.count;
-    btn.innerHTML = (data.liked ? '❤️' : '🤍') + ' <span id="like-count">' + data.count + '</span> Likes';
+    cnt.textContent   = data.count;
+    label.textContent = data.liked ? 'Unlike' : 'Like';
+    svg.setAttribute('fill',   data.liked ? '#ef4444' : 'none');
+    svg.setAttribute('stroke', data.liked ? '#ef4444' : 'rgba(255,255,255,0.7)');
     btn.className = 'action-btn' + (data.liked ? ' liked' : '');
+    showToast(
+      data.liked ? '❤️ Added to your likes!' : '🤍 Removed from likes',
+      data.liked ? 'like-on' : 'like-off'
+    );
   }
 }
 
-// ── Subscribe
+// ── Subscribe / Unsubscribe
 async function toggleSub() {
-  const btn = document.getElementById('sub-btn');
-  const res = await fetch('/cookstream/api/subscribe.php', {
+  const btn      = document.getElementById('sub-btn');
+  const label    = document.getElementById('sub-label');
+  const bell     = btn.querySelector('.bell-icon');
+  const cntBtn   = document.getElementById('sub-count-btn');
+  const cntStrip = document.getElementById('sub-count-strip');
+
+  const res  = await fetch('/cookstream/api/subscribe.php', {
     method:'POST',
     headers:{'Content-Type':'application/x-www-form-urlencoded'},
     body:'channel_id=<?= $v['channel_id'] ?>'
   });
   const data = await res.json();
   if (data.subscribed !== undefined) {
-    btn.innerHTML = (data.subscribed ? '🔔 Subscribed' : '🔔 Subscribe') +
-      ' <span style="opacity:.55;font-size:.78rem">(' + data.count + ')</span>';
-    btn.className = 'action-btn' + (data.subscribed ? ' subbed' : '');
+    label.textContent    = data.subscribed ? 'Subscribed' : 'Subscribe';
+    bell.textContent     = data.subscribed ? '🔔' : '🔕';
+    if (cntBtn)   cntBtn.textContent   = data.count;
+    if (cntStrip) cntStrip.textContent = data.count + ' subscribers';
+    btn.className = data.subscribed ? 'subbed' : '';
+    showToast(
+      data.subscribed
+        ? '🔔 Subscribed! You\'ll be notified of new videos.'
+        : '🔕 Unsubscribed from this channel.',
+      data.subscribed ? 'sub-on' : 'sub-off'
+    );
   }
 }
 
