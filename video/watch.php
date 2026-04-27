@@ -184,48 +184,65 @@ $uploaded    = isset($_GET['uploaded']);
     #like-btn.liked .heart-icon { transform:scale(1.15); }
     #like-btn:not(.liked):hover .heart-icon { transform:scale(1.1); }
 
-    /* Subscribe button states */
+    /* Subscribe button — YouTube-style pill */
     #sub-btn {
-      background: linear-gradient(135deg, hsl(25,100%,50%), hsl(10,90%,50%));
+      background: #fff;
       border: none;
-      color: #fff;
-      box-shadow: 0 4px 14px hsla(25,100%,50%,.35);
-      font-size:.9rem;
-      padding:10px 22px;
+      border-radius: 999px !important;
+      color: #0f0f0f;
+      font-size: .9rem;
+      font-weight: 700;
+      padding: 10px 20px;
+      box-shadow: none;
+      letter-spacing: .01em;
+      gap: 6px;
     }
-    #sub-btn:hover { box-shadow:0 6px 20px hsla(25,100%,50%,.5); transform:translateY(-2px); }
+    #sub-btn:hover {
+      background: #e5e5e5;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0,0,0,.3);
+    }
+    #sub-btn:active { transform: translateY(0); }
+
+    /* Subscribed state — muted dark pill */
     #sub-btn.subbed {
-      background: rgba(34,197,94,.15);
-      border: 1px solid #22c55e;
-      color: #86efac;
-      box-shadow: 0 4px 14px rgba(34,197,94,.2);
+      background: rgba(255,255,255,.1);
+      border: 1px solid rgba(255,255,255,.18) !important;
+      color: #fff;
+      box-shadow: none;
     }
-    #sub-btn.subbed:hover { box-shadow:0 6px 20px rgba(34,197,94,.35); }
+    #sub-btn.subbed:hover {
+      background: rgba(255,255,255,.15);
+      transform: translateY(-1px);
+    }
+
+    /* Owner state — greyed disabled */
     #sub-btn.owner-btn {
-      background: rgba(255,255,255,.05);
-      border: 1px solid rgba(255,255,255,.1);
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.1) !important;
       color: rgba(255,255,255,.35);
       box-shadow: none;
       cursor: default;
+      border-radius: 999px !important;
     }
-    #sub-btn.owner-btn:hover { transform:none; box-shadow:none; }
+    #sub-btn.owner-btn:hover { transform: none; background: rgba(255,255,255,.08); }
 
     /* Bell animation */
-    .bell-icon { display:inline-block; transition:transform .3s; }
-    #sub-btn.subbed .bell-icon { animation:bellRing .4s ease; }
+    .bell-icon { display:inline-block; }
+    #sub-btn.subbed .bell-icon { animation: bellRing .4s ease; }
     @keyframes bellRing {
-      0%   { transform:rotate(0);   }
+      0%   { transform:rotate(0); }
       25%  { transform:rotate(20deg); }
       50%  { transform:rotate(-18deg); }
       75%  { transform:rotate(12deg); }
-      100% { transform:rotate(0);   }
+      100% { transform:rotate(0); }
     }
 
     /* Sub count badge */
     .sub-count {
-      font-size:.75rem;
-      opacity:.6;
-      margin-left:2px;
+      font-size: .75rem;
+      opacity: .55;
+      margin-left: 2px;
     }
 
     /* ── Channel Strip ── */
