@@ -89,6 +89,29 @@ $tables = [
     FOREIGN KEY (channel_id) REFERENCES channels(id) ON DELETE CASCADE
 ) ENGINE=InnoDB",
 
+"shorts" => "CREATE TABLE IF NOT EXISTS shorts (
+    id              INT AUTO_INCREMENT PRIMARY KEY,
+    channel_id      INT          NOT NULL,
+    title           VARCHAR(200) NOT NULL,
+    description     TEXT,
+    category        ENUM('veg','non-veg') NOT NULL DEFAULT 'veg',
+    video_path      VARCHAR(300) NOT NULL,
+    thumbnail_path  VARCHAR(300) DEFAULT NULL,
+    views           INT          DEFAULT 0,
+    created_at      TIMESTAMP    DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (channel_id) REFERENCES channels(id) ON DELETE CASCADE
+) ENGINE=InnoDB",
+
+"shorts_likes" => "CREATE TABLE IF NOT EXISTS shorts_likes (
+    id         INT AUTO_INCREMENT PRIMARY KEY,
+    short_id   INT NOT NULL,
+    user_id    INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE KEY unique_short_like (short_id, user_id),
+    FOREIGN KEY (short_id) REFERENCES shorts(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id)  REFERENCES users(id)  ON DELETE CASCADE
+) ENGINE=InnoDB",
+
 ];
 
 foreach ($tables as $name => $sql) {
