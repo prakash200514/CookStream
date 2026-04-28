@@ -69,4 +69,55 @@ function vegBadge(string $cat): string {
     }
     return '<span class="badge-nonveg"><span class="dot"></span>Non-Veg</span>';
 }
+
+/**
+ * Get all shorts for a specific channel, newest first.
+ */
+function getChannelShorts(mysqli $conn, int $channelId): array {
+    $stmt = $conn->prepare(
+        "SELECT s.*,
+                (SELECT COUNT(*) FROM shorts_likes WHERE short_id = s.id) AS like_count
+         FROM shorts s
+         WHERE s.channel_id = ?
+         ORDER BY s.created_at DESC"
+    );
+    $stmt->bind_param('i', $channelId);
+    $stmt->execute();
+    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+}
+
+/**
+ * Get the most recent shorts across all channels (for homepage strip / feed).
+ */
+function getAllShorts(mysqli $conn, int $limit = 12): array {
+    $stmt = $conn->prepare(
+        "SELECT s.*, c.name AS channel_name,
+                (SELECT COUNT(*) FROM shorts_likes WHERE short_id = s.id) AS like_count
+         FROM shorts s
+         JOIN channels c ON c.id = s.channel_id
+         ORDER BY s.created_at DESC
+         LIMIT ?"
+    );
+    $stmt->bind_param('i', $limit);
+    $stmt->execute();
+    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+}
+
+/**
+ * Save an uploaded short video file. Returns relative path or false.
+ */
+function saveShortFile(array $file): string|false {
+    $allowed = ['video/mp4', 'video/webm', 'video/ogg', 'video/quicktime'];
+    if (!in_array($file['type'], $allowed)) return false;
+
+    $shortsDir = UPLOAD_DIR . 'shorts/';
+    if (!is_dir($shortsDir)) mkdir($shortsDir, 0755, true);
+
+    $ext  = pathinfo($file['name'], PATHINFO_EXTENSION);
+    $name = uniqid('short_', true) . '.' . $ext;
+    $dest = $shortsDir . $name;
+
+    if (!move_uploaded_file($file['tmp_name'], $dest)) return false;
+    return 'uploads/shorts/' . $name;
+}
 ?>
