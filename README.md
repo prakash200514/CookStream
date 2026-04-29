@@ -37,3 +37,27 @@
 - Filter content by **Veg / Non-Veg** categories
 - Register securely with **Email OTP Verification**
 
+
+## ✨ Features
+
+### 👤 Authentication
+| Feature | Details |
+|---|---|
+| User Registration | Name, email, password with role selection |
+| Email OTP Verification | 6-digit OTP sent via SMTP (PHPMailer/Gmail) |
+| OTP Expiry | Configurable expiry window |
+| Secure Login | Password hashing (bcrypt) |
+| Session Management | PHP native sessions |
+| Logout | Session destruction |
+
+### 📺 Videos
+| Feature | Details |
+|---|---|
+| Video Upload | MP4, WebM, OGG, MOV — up to 500 MB |
+| Thumbnail Upload | JPEG, PNG, WebP, GIF |
+| Recipe Metadata | Ingredients (JSON array) + Steps (JSON array) |
+| Categories | Veg / Non-Veg badge system |
+| View Counter | Incremented on each watch |
+| Like / Unlike | Heart toggle with AJAX (no page reload) |
+| Comments | Real-time comment submission |
+| Watch Page | YouTube-style player with sidebar recommendations |
