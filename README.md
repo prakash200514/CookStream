@@ -61,3 +61,20 @@
 | Like / Unlike | Heart toggle with AJAX (no page reload) |
 | Comments | Real-time comment submission |
 | Watch Page | YouTube-style player with sidebar recommendations |
+
+### 📱 Shorts
+| Feature | Details |
+|---|---|
+| Short Video Upload | Vertical format cooking clips |
+| Shorts Feed | TikTok/Reels-style full-screen scroll |
+| Like & Comment | Per-short engagement system |
+| Channel Shorts Tab | Dedicated shorts section on channel page |
+
+### 📡 Channel
+| Feature | Details |
+|---|---|
+| Channel Creation | Name, description, banner image |
+| Channel Dashboard | Video & shorts management |
+| Subscriber Count | Live subscription counter |
+| Subscribe / Unsubscribe | Bell animation + toast notification |
+| Creator Controls | Upload, manage, and delete content |
