@@ -25,3 +25,15 @@
 - [Screenshots](#-screenshots)
 - [Contributing](#-contributing)
 
+
+## 🌟 Overview
+
+**CookStream** is a full-stack cooking video-sharing platform built with PHP and MySQL. It allows food enthusiasts to:
+
+- Upload and stream **cooking videos** with full recipe metadata (ingredients + steps)
+- Share quick **Shorts** (vertical video clips)
+- Create and manage a **personal Channel**
+- **Subscribe** to channels, **like** videos, and leave **comments**
+- Filter content by **Veg / Non-Veg** categories
+- Register securely with **Email OTP Verification**
+
