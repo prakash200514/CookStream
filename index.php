@@ -42,6 +42,9 @@ $stmt = $conn->prepare($sql);
 if ($params) $stmt->bind_param($types, ...$params);
 $stmt->execute();
 $videos = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+
+// Recent shorts for homepage strip
+$recentShorts = getAllShorts($conn, 10);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -71,6 +74,7 @@ $videos = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     <?php if ($user): ?>
       <?php if ($channel): ?>
         <a href="/cookstream/video/upload.php" class="btn btn-primary" id="upload-btn">⬆ Upload</a>
+        <a href="/cookstream/shorts/upload.php" class="btn btn-outline" id="shorts-upload-btn" style="background:linear-gradient(135deg,rgba(168,85,247,.2),rgba(236,72,153,.2));border-color:rgba(168,85,247,.5);color:#d8b4fe">📱 Short</a>
         <a href="/cookstream/channel/dashboard.php" class="btn btn-outline" id="channel-btn">📺 My Channel</a>
       <?php else: ?>
         <a href="/cookstream/channel/create.php" class="btn btn-outline" id="create-channel-btn">＋ Create Channel</a>
@@ -84,13 +88,53 @@ $videos = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
   </div>
 </nav>
 
-<!-- ── Filter Bar ─────────────────────────────────────────────────────── -->
+<!-- ── Filter Bar ──────────────────────────────────────────────────────── -->
 <div class="filter-bar">
   <button class="filter-btn <?= !$cat && !$q ? 'active':'' ?>" data-filter="all">🍽 All</button>
   <button class="filter-btn <?= $cat==='veg'   ?'active':'' ?>" data-filter="veg">🥦 Veg</button>
   <button class="filter-btn <?= $cat==='non-veg'?'active':'' ?>" data-filter="non-veg">🍗 Non-Veg</button>
   <button class="filter-btn <?= $cat==='trending'?'active':'' ?>" data-filter="trending">🔥 Trending</button>
+  <a href="/cookstream/shorts/view.php" class="filter-btn" style="background:linear-gradient(135deg,rgba(168,85,247,.25),rgba(236,72,153,.25));border-color:rgba(168,85,247,.4);color:#d8b4fe;text-decoration:none">📱 Shorts</a>
 </div>
+
+<?php if (!empty($recentShorts)): ?>
+<!-- ── Shorts Strip ──────────────────────────────────────────────────────── -->
+<div class="container" style="margin-bottom:0;padding-bottom:0">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+    <h2 class="section-title" style="margin:0">
+      <span style="background:linear-gradient(135deg,#a855f7,#ec4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">📱 Shorts</span>
+    </h2>
+    <a href="/cookstream/shorts/view.php" style="font-size:.82rem;color:#a855f7;font-weight:600;text-decoration:none">View All →</a>
+  </div>
+  <div style="display:flex;gap:12px;overflow-x:auto;padding-bottom:14px;scrollbar-width:none">
+    <?php foreach ($recentShorts as $s): ?>
+    <a href="/cookstream/shorts/view.php?id=<?= $s['id'] ?>" style="
+      flex-shrink:0;width:130px;text-decoration:none;
+      border-radius:14px;overflow:hidden;position:relative;
+      background:#111;border:1px solid rgba(255,255,255,.08);
+      display:block;
+    ">
+      <!-- 9:16 thumbnail or video preview -->
+      <div style="aspect-ratio:9/16;background:#111;overflow:hidden;display:flex;align-items:center;justify-content:center">
+        <?php if ($s['thumbnail_path']): ?>
+          <img src="/cookstream/<?= sanitize($s['thumbnail_path']) ?>" alt="" style="width:100%;height:100%;object-fit:cover">
+        <?php else: ?>
+          <span style="font-size:2rem"><?= $s['category']==='veg'?'🥦':'🍗' ?></span>
+        <?php endif; ?>
+      </div>
+      <!-- Overlay -->
+      <div style="position:absolute;bottom:0;left:0;right:0;padding:8px;
+        background:linear-gradient(to top,rgba(0,0,0,.8) 0%,transparent 100%)">
+        <div style="font-size:.72rem;font-weight:700;color:#fff;line-height:1.2"><?= sanitize(mb_substr($s['title'],0,30)) ?></div>
+        <div style="font-size:.65rem;color:rgba(255,255,255,.5);margin-top:2px">❤️ <?= formatViews((int)$s['like_count']) ?></div>
+      </div>
+      <!-- Play icon -->
+      <div style="position:absolute;top:8px;right:8px;background:rgba(0,0,0,.5);border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:.75rem">▶</div>
+    </a>
+    <?php endforeach; ?>
+  </div>
+</div>
+<?php endif; ?>
 
 <!-- ── Video Grid ─────────────────────────────────────────────────────── -->
 <div class="container">

@@ -112,6 +112,16 @@ $tables = [
     FOREIGN KEY (user_id)  REFERENCES users(id)  ON DELETE CASCADE
 ) ENGINE=InnoDB",
 
+"short_comments" => "CREATE TABLE IF NOT EXISTS short_comments (
+    id         INT AUTO_INCREMENT PRIMARY KEY,
+    short_id   INT NOT NULL,
+    user_id    INT NOT NULL,
+    comment    TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (short_id) REFERENCES shorts(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id)  REFERENCES users(id)  ON DELETE CASCADE
+) ENGINE=InnoDB",
+
 ];
 
 foreach ($tables as $name => $sql) {
