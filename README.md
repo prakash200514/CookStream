@@ -78,3 +78,24 @@
 | Subscriber Count | Live subscription counter |
 | Subscribe / Unsubscribe | Bell animation + toast notification |
 | Creator Controls | Upload, manage, and delete content |
+
+### 🏠 Homepage
+- Featured video grid
+- Shorts preview strip
+- Category filter (All / Veg / Non-Veg)
+- View counts and time-ago timestamps
+- Responsive card layout
+
+---
+
+## 🛠 Tech Stack
+
+| Layer | Technology |
+|---|---|
+| **Backend** | PHP 8.1+ (procedural + OOP) |
+| **Database** | MySQL 8.0+ via MySQLi |
+| **Frontend** | HTML5, CSS3, Vanilla JavaScript |
+| **Email** | PHPMailer + Gmail SMTP |
+| **Server** | Apache (XAMPP) |
+| **File Storage** | Local filesystem (`/uploads`) |
+| **Session** | PHP native sessions |
