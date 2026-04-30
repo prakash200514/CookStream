@@ -36,7 +36,7 @@ img{max-width:100%}
   display:flex;
   align-items:center;
   justify-content:space-between;
-  gap:20px;
+  gap:40px;
 }
 
 /* Logo */
@@ -51,7 +51,7 @@ img{max-width:100%}
 
 /* Search Box (YouTube Style) */
 .search-wrap{
-  flex:1;max-width:640px;
+  flex:1;max-width:580px;
   display:flex;
   align-items:center;
 }
@@ -117,7 +117,7 @@ img{max-width:100%}
   display:flex;
   align-items:center;
   gap:16px;
-  margin-left:auto;
+  margin-left:20px;
 }
 
 /* Create Button (YouTube Style) */
