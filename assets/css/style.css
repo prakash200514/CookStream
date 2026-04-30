@@ -28,14 +28,15 @@ img{max-width:100%}
 /* ── Navbar ── */
 .navbar{
   position:sticky;top:0;z-index:1000;
-  background:rgba(10,12,16,0.75);
+  background:rgba(10,12,16,0.85);
   backdrop-filter:blur(28px) saturate(180%);
   -webkit-backdrop-filter:blur(28px) saturate(180%);
   border-bottom:1px solid rgba(255,255,255,0.06);
   padding:0 28px;
-  height:68px;
+  height:72px; /* Increased height slightly */
   display:flex;
   align-items:center;
+  justify-content:space-between;
   gap:20px;
   transition:background .3s;
 }
@@ -134,11 +135,12 @@ img{max-width:100%}
 
 /* Buttons */
 .btn{
-  display:inline-flex;align-items:center;gap:7px;
-  padding:9px 20px;
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  height:38px; /* Fixed height for consistency */
+  padding:0 20px;
   border-radius:50px;
   font-size:13.5px;font-weight:600;
-  cursor:pointer;border:none;
+  cursor:pointer;border:1px solid transparent;
   transition:all .22s cubic-bezier(.4,0,.2,1);
   font-family:'Inter',sans-serif;
   white-space:nowrap;
@@ -276,21 +278,25 @@ img{max-width:100%}
 
 /* Mobile Menu Overlay */
 .mobile-menu{
-  display:none;
+  display:none !important; /* Force hide on desktop */
   position:fixed;
-  top:68px;left:0;right:0;
+  top:72px;left:0;right:0;
   background:rgba(10,12,16,0.98);
   backdrop-filter:blur(24px);
   border-bottom:1px solid rgba(255,255,255,0.08);
   padding:16px 20px 24px;
-  z-index:999;
+  z-index:2000;
   flex-direction:column;
   gap:8px;
   transform:translateY(-10px);
   opacity:0;
   transition:opacity .25s,transform .25s;
 }
-.mobile-menu.open{display:flex;opacity:1;transform:translateY(0)}
+.mobile-menu.open{
+  display:flex !important; /* Show only when open */
+  opacity:1;
+  transform:translateY(0);
+}
 .mobile-menu .mob-search{width:100%;margin-bottom:8px;position:relative}
 .mobile-menu .mob-search input{
   width:100%;padding:12px 16px 12px 44px;
@@ -515,10 +521,11 @@ img{max-width:100%}
   .watch-sidebar{display:none}
 }
 @media(max-width:768px){
-  .navbar{padding:0 16px;gap:12px}
+  .navbar{padding:0 16px;gap:12px;height:64px}
   .search-wrap{display:none}
   .nav-actions .btn-outline,.nav-actions .btn-ghost,.nav-actions .btn-primary:not(:last-child){display:none}
   .nav-hamburger{display:flex}
+  .mobile-menu{top:64px} /* Adjust top for mobile navbar height */
   .filter-bar{padding:12px 16px 0}
 }
 @media(max-width:600px){
