@@ -1,5 +1,62 @@
 // ── CookStream Main JS ────────────────────────────────────────────────────────
 
+// ── Navbar: Scroll shadow ──────────────────────────────────────────────────
+const navbar = document.getElementById('main-navbar');
+if (navbar) {
+  window.addEventListener('scroll', () => {
+    navbar.style.background = window.scrollY > 10
+      ? 'rgba(10,12,16,0.95)'
+      : 'rgba(10,12,16,0.75)';
+  }, { passive: true });
+}
+
+// ── Avatar Dropdown ────────────────────────────────────────────────────────
+const avatarToggle = document.getElementById('avatar-toggle');
+const userDropdown = document.getElementById('user-dropdown');
+if (avatarToggle && userDropdown) {
+  avatarToggle.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const open = userDropdown.classList.toggle('open');
+    // Animate: set display first, then opacity via class
+    if (open) { userDropdown.style.display = 'flex'; }
+  });
+  document.addEventListener('click', (e) => {
+    if (!document.getElementById('user-menu-wrap')?.contains(e.target)) {
+      userDropdown.classList.remove('open');
+    }
+  });
+}
+
+// ── Mobile Hamburger ───────────────────────────────────────────────────────
+const hamburger = document.getElementById('nav-hamburger');
+const mobileMenu = document.getElementById('mobile-menu');
+if (hamburger && mobileMenu) {
+  hamburger.addEventListener('click', () => {
+    const isOpen = hamburger.classList.toggle('open');
+    mobileMenu.classList.toggle('open', isOpen);
+  });
+  // Close on outside click
+  document.addEventListener('click', (e) => {
+    if (!navbar?.contains(e.target) && !mobileMenu.contains(e.target)) {
+      hamburger.classList.remove('open');
+      mobileMenu.classList.remove('open');
+    }
+  });
+}
+
+// ── Mobile Search ──────────────────────────────────────────────────────────
+const mobSearchInput = document.getElementById('mob-search-input');
+if (mobSearchInput) {
+  mobSearchInput.addEventListener('keydown', e => {
+    if (e.key === 'Enter') {
+      const q = mobSearchInput.value.trim();
+      if (q) window.location.href = `/cookstream/?q=${encodeURIComponent(q)}`;
+    }
+  });
+}
+
+
+
 // ── Toast ──────────────────────────────────────────────────────────────────
 function showToast(msg, type = 'success') {
   let t = document.getElementById('cs-toast');

@@ -58,11 +58,15 @@ $recentShorts = getAllShorts($conn, 10);
 <body>
 
 <!-- ── Navbar ────────────────────────────────────────────────────────── -->
-<nav class="navbar">
+<nav class="navbar" id="main-navbar">
+
+  <!-- Logo -->
   <a class="navbar-brand" href="/cookstream/">
-    <span class="logo-icon">🍳</span> CookStream
+    <span class="logo-icon">🍳</span>
+    <span class="logo-text">CookStream</span>
   </a>
 
+  <!-- Search (desktop) -->
   <div class="search-wrap">
     <span class="search-icon">🔍</span>
     <input id="search-input" type="text" placeholder="Search food videos…"
@@ -70,31 +74,78 @@ $recentShorts = getAllShorts($conn, 10);
     <div id="search-results" class="search-results"></div>
   </div>
 
+  <!-- Desktop Actions -->
   <div class="nav-actions">
     <?php if ($user): ?>
+
       <?php if ($channel): ?>
-        <a href="/cookstream/video/upload.php" class="btn btn-primary" id="upload-btn">⬆ Upload</a>
-        <a href="/cookstream/shorts/upload.php" class="btn btn-outline" id="shorts-upload-btn" style="background:linear-gradient(135deg,rgba(168,85,247,.2),rgba(236,72,153,.2));border-color:rgba(168,85,247,.5);color:#d8b4fe">📱 Short</a>
-        <a href="/cookstream/channel/dashboard.php" class="btn btn-outline" id="channel-btn">📺 My Channel</a>
-      <?php else: ?>
-        <a href="/cookstream/channel/create.php" class="btn btn-outline" id="create-channel-btn">＋ Create Channel</a>
+        <a href="/cookstream/video/upload.php" class="btn btn-primary btn-sm" id="upload-btn">⬆ Upload</a>
+        <a href="/cookstream/shorts/upload.php" class="btn btn-sm" id="shorts-upload-btn"
+           style="background:linear-gradient(135deg,rgba(168,85,247,.2),rgba(236,72,153,.2));border:1px solid rgba(168,85,247,.4);color:#d8b4fe;">📱 Short</a>
       <?php endif; ?>
-      <a href="/cookstream/auth/logout.php" class="btn btn-ghost">Sign Out</a>
-      <div class="avatar" title="<?= sanitize($user['name']) ?>"><?= strtoupper($user['name'][0]) ?></div>
+
+      <!-- User Dropdown -->
+      <div class="user-menu-wrap" id="user-menu-wrap">
+        <div class="avatar" id="avatar-toggle" title="<?= sanitize($user['name']) ?>">
+          <?= strtoupper($user['name'][0]) ?>
+        </div>
+        <div class="user-dropdown" id="user-dropdown">
+          <div class="dd-header">
+            <div class="dd-name"><?= sanitize($user['name']) ?></div>
+            <div class="dd-role"><?= sanitize($user['email'] ?? 'Member') ?></div>
+          </div>
+          <?php if ($channel): ?>
+            <a href="/cookstream/channel/dashboard.php"><span class="dd-icon">📺</span> My Channel</a>
+          <?php else: ?>
+            <a href="/cookstream/channel/create.php"><span class="dd-icon">✨</span> Create Channel</a>
+          <?php endif; ?>
+          <a href="/cookstream/video/upload.php"><span class="dd-icon">⬆</span> Upload Video</a>
+          <div class="dd-divider"></div>
+          <a href="/cookstream/auth/logout.php" class="dd-danger"><span class="dd-icon">🚪</span> Sign Out</a>
+        </div>
+      </div>
+
     <?php else: ?>
-      <a href="/cookstream/auth/login.php" class="btn btn-outline" id="login-btn">Sign In</a>
-      <a href="/cookstream/auth/register.php" class="btn btn-primary" id="register-btn">Join Free</a>
+      <a href="/cookstream/auth/login.php" class="btn btn-outline btn-sm" id="login-btn">Sign In</a>
+      <a href="/cookstream/auth/register.php" class="btn btn-primary btn-sm" id="register-btn">🚀 Join Free</a>
     <?php endif; ?>
+
+    <!-- Mobile Hamburger -->
+    <button class="nav-hamburger" id="nav-hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
   </div>
 </nav>
 
-<!-- ── Filter Bar ──────────────────────────────────────────────────────── -->
-<div class="filter-bar">
+<!-- ── Mobile Menu ─────────────────────────────────────────────────────── -->
+<div class="mobile-menu" id="mobile-menu">
+  <div class="mob-search">
+    <span class="mob-search-icon">🔍</span>
+    <input type="text" id="mob-search-input" placeholder="Search food videos…">
+  </div>
+  <?php if ($user): ?>
+    <?php if ($channel): ?>
+      <a href="/cookstream/video/upload.php">⬆ Upload Video</a>
+      <a href="/cookstream/shorts/upload.php">📱 Upload Short</a>
+      <a href="/cookstream/channel/dashboard.php">📺 My Channel</a>
+    <?php else: ?>
+      <a href="/cookstream/channel/create.php">✨ Create Channel</a>
+    <?php endif; ?>
+    <div class="mob-divider"></div>
+    <a href="/cookstream/auth/logout.php">🚪 Sign Out</a>
+  <?php else: ?>
+    <a href="/cookstream/auth/login.php">🔑 Sign In</a>
+    <a href="/cookstream/auth/register.php">🚀 Join Free</a>
+  <?php endif; ?>
+</div>
+
+<!-- ── Category Filter Bar ─────────────────────────────────────────────── -->
+<div class="filter-bar" id="filter-bar">
   <button class="filter-btn <?= !$cat && !$q ? 'active':'' ?>" data-filter="all">🍽 All</button>
-  <button class="filter-btn <?= $cat==='veg'   ?'active':'' ?>" data-filter="veg">🥦 Veg</button>
-  <button class="filter-btn <?= $cat==='non-veg'?'active':'' ?>" data-filter="non-veg">🍗 Non-Veg</button>
-  <button class="filter-btn <?= $cat==='trending'?'active':'' ?>" data-filter="trending">🔥 Trending</button>
-  <a href="/cookstream/shorts/view.php" class="filter-btn" style="background:linear-gradient(135deg,rgba(168,85,247,.25),rgba(236,72,153,.25));border-color:rgba(168,85,247,.4);color:#d8b4fe;text-decoration:none">📱 Shorts</a>
+  <button class="filter-btn <?= $cat==='veg'    ? 'active':'' ?>" data-filter="veg">🥦 Veg</button>
+  <button class="filter-btn <?= $cat==='non-veg' ? 'active':'' ?>" data-filter="non-veg">🍗 Non-Veg</button>
+  <button class="filter-btn <?= $cat==='trending' ? 'active':'' ?>" data-filter="trending">🔥 Trending</button>
+  <a href="/cookstream/shorts/view.php" class="filter-btn shorts-btn <?= str_contains($_SERVER['REQUEST_URI'] ?? '', 'shorts') ? 'active':'' ?>">📱 Shorts</a>
 </div>
 
 <?php if (!empty($recentShorts)): ?>
