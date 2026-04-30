@@ -45,6 +45,20 @@ $videos = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 
 // Recent shorts for homepage strip
 $recentShorts = getAllShorts($conn, 10);
+
+// Fetch user subscriptions for sidebar
+$mySubs = [];
+if ($user) {
+    $subStmt = $conn->prepare(
+        "SELECT c.id, c.name FROM subscriptions s 
+         JOIN channels c ON c.id = s.channel_id 
+         WHERE s.user_id = ? 
+         ORDER BY c.name ASC"
+    );
+    $subStmt->bind_param('i', $user['id']);
+    $subStmt->execute();
+    $mySubs = $subStmt->get_result()->fetch_all(MYSQLI_ASSOC);
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -121,21 +135,31 @@ $recentShorts = getAllShorts($conn, 10);
   <aside class="sidebar">
     <a href="/cookstream/" class="sidebar-item active"><i class="fas fa-home"></i> Home</a>
     <a href="/cookstream/shorts/view.php" class="sidebar-item"><i class="fas fa-bolt"></i> Shorts</a>
-    <a href="#" class="sidebar-item"><i class="fas fa-layer-group"></i> Subscriptions</a>
+    <a href="/cookstream/subscriptions.php" class="sidebar-item"><i class="fas fa-layer-group"></i> Subscriptions</a>
     
     <div class="sidebar-section">
       <a href="#" class="sidebar-item">You <i class="fas fa-chevron-right" style="font-size:10px;margin-left:auto;"></i></a>
       <a href="#" class="sidebar-item"><i class="fas fa-history"></i> History</a>
-      <a href="#" class="sidebar-item"><i class="fas fa-play-circle"></i> Your videos</a>
+      <a href="/cookstream/channel/dashboard.php" class="sidebar-item"><i class="fas fa-play-circle"></i> Your videos</a>
       <a href="#" class="sidebar-item"><i class="fas fa-clock"></i> Watch later</a>
       <a href="#" class="sidebar-item"><i class="fas fa-thumbs-up"></i> Liked videos</a>
     </div>
 
     <div class="sidebar-section">
       <div class="sidebar-title">Subscriptions</div>
-      <!-- Placeholder subs -->
-      <a href="#" class="sidebar-item"><div class="v-avatar" style="width:24px;height:24px;font-size:10px;">C</div> Chef John</a>
-      <a href="#" class="sidebar-item"><div class="v-avatar" style="width:24px;height:24px;font-size:10px;">G</div> Gordon R.</a>
+      <?php if (!$user): ?>
+        <p style="padding:10px 12px;font-size:13px;color:var(--muted);">Sign in to see updates from your favorite channels.</p>
+        <a href="/cookstream/auth/login.php" class="sidebar-item" style="color:var(--accent);font-weight:600;"><i class="fas fa-user-circle"></i> Sign in</a>
+      <?php elseif (empty($mySubs)): ?>
+        <p style="padding:10px 12px;font-size:13px;color:var(--muted);">No subscriptions yet.</p>
+      <?php else: ?>
+        <?php foreach ($mySubs as $sub): ?>
+          <a href="/cookstream/channel/view.php?id=<?= $sub['id'] ?>" class="sidebar-item">
+            <div class="v-avatar" style="width:24px;height:24px;font-size:10px;"><?= strtoupper($sub['name'][0]) ?></div>
+            <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"><?= sanitize($sub['name']) ?></span>
+          </a>
+        <?php endforeach; ?>
+      <?php endif; ?>
     </div>
   </aside>
 
