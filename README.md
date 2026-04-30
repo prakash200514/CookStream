@@ -1,4 +1,9 @@
+<<<<<<< HEAD
 # 🍳 CookStream
+=======
+<H1> COOKSTREAM </H1>
+🍳 CookStream
+>>>>>>> aeabfdd5629350d0ada17e72ab0371f135fbeb69
 
 > **A YouTube-style cooking video platform** — stream recipes, share your culinary creations, and build a community of food lovers.
 
@@ -24,7 +29,10 @@
 - [Screenshots](#-screenshots)
 - [Contributing](#-contributing)
 
+<<<<<<< HEAD
 ---
+=======
+>>>>>>> aeabfdd5629350d0ada17e72ab0371f135fbeb69
 
 ## 🌟 Overview
 
@@ -37,7 +45,10 @@
 - Filter content by **Veg / Non-Veg** categories
 - Register securely with **Email OTP Verification**
 
+<<<<<<< HEAD
 ---
+=======
+>>>>>>> aeabfdd5629350d0ada17e72ab0371f135fbeb69
 
 ## ✨ Features
 
@@ -101,9 +112,13 @@
 | **File Storage** | Local filesystem (`/uploads`) |
 | **Session** | PHP native sessions |
 
+<<<<<<< HEAD
 ---
 
 ## 📁 Project Structure
+=======
+📁 Project Structure
+>>>>>>> aeabfdd5629350d0ada17e72ab0371f135fbeb69
 
 ```
 cookstream/
@@ -356,7 +371,10 @@ POST /api/subscribe.php
 - OTP expires after a configurable time window
 - Session-based authentication guard on all protected pages
 
+<<<<<<< HEAD
 ---
+=======
+>>>>>>> aeabfdd5629350d0ada17e72ab0371f135fbeb69
 
 ## 🤝 Contributing
 
@@ -379,3 +397,7 @@ This project is licensed under the **MIT License** — see the [LICENSE](LICENSE
 **Prakash** — Built with ❤️ for cooking enthusiasts everywhere.
 
 > *"Share your recipes. Inspire the world."*
+<<<<<<< HEAD
+=======
+
+>>>>>>> aeabfdd5629350d0ada17e72ab0371f135fbeb69
