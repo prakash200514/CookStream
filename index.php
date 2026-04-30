@@ -106,6 +106,9 @@ $recentShorts = getAllShorts($conn, 10);
         <i class="fas fa-plus"></i>
         <span>Create</span>
       </a>
+      <div class="notification-wrap">
+        <i class="far fa-bell"></i>
+      </div>
       <a href="/cookstream/auth/login.php" class="btn btn-outline btn-sm" style="border-radius:20px;border-color:#333;color:#3ea6ff;">
         <i class="far fa-user-circle" style="margin-right:8px;"></i> Sign in
       </a>
