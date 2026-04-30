@@ -177,25 +177,35 @@ $uploaded = isset($_GET['uploaded']);
 
     /* ── Nav arrows (desktop) ── */
     .nav-arrows {
-      position: fixed; right: 20px; top: 50%; transform: translateY(-50%);
-      display: flex; flex-direction: column; gap: 10px; z-index: 100;
+      position: fixed; left: 24px; top: 50%; transform: translateY(-50%);
+      display: flex; flex-direction: column; gap: 14px; z-index: 100;
     }
     .nav-arrow {
-      width: 40px; height: 40px; border-radius: 50%;
-      background: rgba(255,255,255,.12); backdrop-filter: blur(8px);
-      border: none; color: #fff; font-size: 1.1rem; cursor: pointer;
+      width: 44px; height: 44px; border-radius: 50%;
+      background: rgba(255,255,255,0.08);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: #fff; font-size: 1.2rem; cursor: pointer;
       display: flex; align-items: center; justify-content: center;
-      transition: background .2s;
+      transition: all .3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     }
-    .nav-arrow:hover { background: rgba(255,255,255,.25); }
+    .nav-arrow:hover { 
+      background: var(--accent); 
+      border-color: transparent;
+      transform: scale(1.1);
+      box-shadow: 0 0 20px rgba(255,107,53,0.4);
+    }
+    .nav-arrow:active { transform: scale(0.95); }
 
     /* progress dots */
     .progress-dots {
-      position: fixed; right: 70px; top: 50%; transform: translateY(-50%);
-      display: flex; flex-direction: column; gap: 6px; z-index: 100;
+      position: fixed; left: 80px; top: 50%; transform: translateY(-50%);
+      display: flex; flex-direction: column; gap: 8px; z-index: 100;
     }
-    .p-dot { width: 4px; height: 4px; border-radius: 2px; background: rgba(255,255,255,.25); transition: all .3s; }
-    .p-dot.active { background: #fff; height: 16px; }
+    .p-dot { width: 5px; height: 5px; border-radius: 3px; background: rgba(255,255,255,0.2); transition: all .4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+    .p-dot.active { background: var(--accent); height: 24px; box-shadow: 0 0 10px var(--accent); }
   </style>
 </head>
 <body>
