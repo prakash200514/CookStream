@@ -52,187 +52,130 @@ $recentShorts = getAllShorts($conn, 10);
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>CookStream – Discover Food Videos</title>
-<meta name="description" content="Watch, upload and share step-by-step food-making videos. Find veg and non-veg recipes from passionate home chefs.">
+<meta name="description" content="Watch, upload and share food videos.">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link rel="stylesheet" href="/cookstream/assets/css/style.css">
 </head>
 <body>
 
 <!-- ── Navbar ────────────────────────────────────────────────────────── -->
-<nav class="navbar" id="main-navbar">
+<nav class="navbar">
+  <div style="display:flex;align-items:center;gap:16px;">
+    <div class="nav-hamburger" id="nav-hamburger">
+      <i class="fas fa-bars"></i>
+    </div>
+    <a class="navbar-brand" href="/cookstream/" style="font-size:18px;">
+      <i class="fas fa-utensils" style="color:var(--accent);font-size:22px;"></i>
+      <span class="logo-text">CookStream</span>
+    </a>
+  </div>
 
-  <!-- Logo -->
-  <a class="navbar-brand" href="/cookstream/">
-    <span class="logo-icon">🍳</span>
-    <span class="logo-text">CookStream</span>
-  </a>
-
-  <!-- Search (desktop) -->
   <div class="search-wrap">
-    <span class="search-icon">🔍</span>
-    <input id="search-input" type="text" placeholder="Search food videos…"
-           value="<?= sanitize($q) ?>">
+    <div class="search-box">
+      <input id="search-input" type="text" placeholder="Search" value="<?= sanitize($q) ?>">
+    </div>
+    <button class="search-btn"><i class="fas fa-search"></i></button>
+    <div class="mic-btn"><i class="fas fa-microphone"></i></div>
     <div id="search-results" class="search-results"></div>
   </div>
 
-  <!-- Desktop Actions -->
   <div class="nav-actions">
     <?php if ($user): ?>
-
-      <?php if ($channel): ?>
-        <a href="/cookstream/video/upload.php" class="btn btn-primary btn-sm" id="upload-btn">⬆ Upload</a>
-        <a href="/cookstream/shorts/upload.php" class="btn btn-sm" id="shorts-upload-btn"
-           style="background:linear-gradient(135deg,rgba(168,85,247,.2),rgba(236,72,153,.2));border:1px solid rgba(168,85,247,.4);color:#d8b4fe;">📱 Short</a>
-      <?php endif; ?>
-
-      <!-- User Dropdown -->
-      <div class="user-menu-wrap" id="user-menu-wrap">
-        <div class="avatar" id="avatar-toggle" title="<?= sanitize($user['name']) ?>">
-          <?= strtoupper($user['name'][0]) ?>
-        </div>
+      <a href="/cookstream/video/upload.php" class="btn-icon" title="Create"><i class="fas fa-video"></i></a>
+      <button class="btn-icon" title="Notifications"><i class="far fa-bell"></i></button>
+      
+      <div class="user-menu-wrap">
+        <div class="avatar" id="avatar-toggle"><?= strtoupper($user['name'][0]) ?></div>
         <div class="user-dropdown" id="user-dropdown">
           <div class="dd-header">
             <div class="dd-name"><?= sanitize($user['name']) ?></div>
-            <div class="dd-role"><?= sanitize($user['email'] ?? 'Member') ?></div>
+            <div class="dd-role"><?= sanitize($user['email']) ?></div>
           </div>
-          <?php if ($channel): ?>
-            <a href="/cookstream/channel/dashboard.php"><span class="dd-icon">📺</span> My Channel</a>
-          <?php else: ?>
-            <a href="/cookstream/channel/create.php"><span class="dd-icon">✨</span> Create Channel</a>
-          <?php endif; ?>
-          <a href="/cookstream/video/upload.php"><span class="dd-icon">⬆</span> Upload Video</a>
-          <div class="dd-divider"></div>
-          <a href="/cookstream/auth/logout.php" class="dd-danger"><span class="dd-icon">🚪</span> Sign Out</a>
+          <a href="/cookstream/channel/dashboard.php"><i class="fas fa-user-circle dd-icon"></i> Your channel</a>
+          <a href="/cookstream/auth/logout.php" class="dd-danger"><i class="fas fa-sign-out-alt dd-icon"></i> Sign out</a>
         </div>
       </div>
-
     <?php else: ?>
-      <a href="/cookstream/auth/login.php" class="btn btn-outline btn-sm" id="login-btn">Sign In</a>
-      <a href="/cookstream/auth/register.php" class="btn btn-primary btn-sm" id="register-btn">🚀 Join Free</a>
+      <a href="/cookstream/auth/login.php" class="btn btn-outline btn-sm" style="border-radius:20px;border-color:#333;color:#3ea6ff;">
+        <i class="far fa-user-circle" style="margin-right:8px;"></i> Sign in
+      </a>
     <?php endif; ?>
-
-    <!-- Mobile Hamburger -->
-    <button class="nav-hamburger" id="nav-hamburger" aria-label="Menu">
-      <span></span><span></span><span></span>
-    </button>
   </div>
 </nav>
 
-<!-- ── Mobile Menu ─────────────────────────────────────────────────────── -->
-<div class="mobile-menu" id="mobile-menu">
-  <div class="mob-search">
-    <span class="mob-search-icon">🔍</span>
-    <input type="text" id="mob-search-input" placeholder="Search food videos…">
-  </div>
-  <?php if ($user): ?>
-    <?php if ($channel): ?>
-      <a href="/cookstream/video/upload.php">⬆ Upload Video</a>
-      <a href="/cookstream/shorts/upload.php">📱 Upload Short</a>
-      <a href="/cookstream/channel/dashboard.php">📺 My Channel</a>
-    <?php else: ?>
-      <a href="/cookstream/channel/create.php">✨ Create Channel</a>
-    <?php endif; ?>
-    <div class="mob-divider"></div>
-    <a href="/cookstream/auth/logout.php">🚪 Sign Out</a>
-  <?php else: ?>
-    <a href="/cookstream/auth/login.php">🔑 Sign In</a>
-    <a href="/cookstream/auth/register.php">🚀 Join Free</a>
-  <?php endif; ?>
-</div>
+<div class="main-wrapper">
+  <!-- ── Sidebar ───────────────────────────────────────────────────────── -->
+  <aside class="sidebar">
+    <a href="/cookstream/" class="sidebar-item active"><i class="fas fa-home"></i> Home</a>
+    <a href="/cookstream/shorts/view.php" class="sidebar-item"><i class="fas fa-bolt"></i> Shorts</a>
+    <a href="#" class="sidebar-item"><i class="fas fa-layer-group"></i> Subscriptions</a>
+    
+    <div class="sidebar-section">
+      <a href="#" class="sidebar-item">You <i class="fas fa-chevron-right" style="font-size:10px;margin-left:auto;"></i></a>
+      <a href="#" class="sidebar-item"><i class="fas fa-history"></i> History</a>
+      <a href="#" class="sidebar-item"><i class="fas fa-play-circle"></i> Your videos</a>
+      <a href="#" class="sidebar-item"><i class="fas fa-clock"></i> Watch later</a>
+      <a href="#" class="sidebar-item"><i class="fas fa-thumbs-up"></i> Liked videos</a>
+    </div>
 
-<!-- ── Category Filter Bar ─────────────────────────────────────────────── -->
-<div class="filter-bar" id="filter-bar">
-  <button class="filter-btn <?= !$cat && !$q ? 'active':'' ?>" data-filter="all">🍽 All</button>
-  <button class="filter-btn <?= $cat==='veg'    ? 'active':'' ?>" data-filter="veg">🥦 Veg</button>
-  <button class="filter-btn <?= $cat==='non-veg' ? 'active':'' ?>" data-filter="non-veg">🍗 Non-Veg</button>
-  <button class="filter-btn <?= $cat==='trending' ? 'active':'' ?>" data-filter="trending">🔥 Trending</button>
-  <a href="/cookstream/shorts/view.php" class="filter-btn shorts-btn <?= str_contains($_SERVER['REQUEST_URI'] ?? '', 'shorts') ? 'active':'' ?>">📱 Shorts</a>
-</div>
+    <div class="sidebar-section">
+      <div class="sidebar-title">Subscriptions</div>
+      <!-- Placeholder subs -->
+      <a href="#" class="sidebar-item"><div class="v-avatar" style="width:24px;height:24px;font-size:10px;">C</div> Chef John</a>
+      <a href="#" class="sidebar-item"><div class="v-avatar" style="width:24px;height:24px;font-size:10px;">G</div> Gordon R.</a>
+    </div>
+  </aside>
 
-<?php if (!empty($recentShorts)): ?>
-<!-- ── Shorts Strip ──────────────────────────────────────────────────────── -->
-<div class="container" style="margin-bottom:0;padding-bottom:0">
-  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
-    <h2 class="section-title" style="margin:0">
-      <span style="background:linear-gradient(135deg,#a855f7,#ec4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">📱 Shorts</span>
-    </h2>
-    <a href="/cookstream/shorts/view.php" style="font-size:.82rem;color:#a855f7;font-weight:600;text-decoration:none">View All →</a>
-  </div>
-  <div style="display:flex;gap:12px;overflow-x:auto;padding-bottom:14px;scrollbar-width:none">
-    <?php foreach ($recentShorts as $s): ?>
-    <a href="/cookstream/shorts/view.php?id=<?= $s['id'] ?>" style="
-      flex-shrink:0;width:130px;text-decoration:none;
-      border-radius:14px;overflow:hidden;position:relative;
-      background:#111;border:1px solid rgba(255,255,255,.08);
-      display:block;
-    ">
-      <!-- 9:16 thumbnail or video preview -->
-      <div style="aspect-ratio:9/16;background:#111;overflow:hidden;display:flex;align-items:center;justify-content:center">
-        <?php if ($s['thumbnail_path']): ?>
-          <img src="/cookstream/<?= sanitize($s['thumbnail_path']) ?>" alt="" style="width:100%;height:100%;object-fit:cover">
-        <?php else: ?>
-          <span style="font-size:2rem"><?= $s['category']==='veg'?'🥦':'🍗' ?></span>
-        <?php endif; ?>
-      </div>
-      <!-- Overlay -->
-      <div style="position:absolute;bottom:0;left:0;right:0;padding:8px;
-        background:linear-gradient(to top,rgba(0,0,0,.8) 0%,transparent 100%)">
-        <div style="font-size:.72rem;font-weight:700;color:#fff;line-height:1.2"><?= sanitize(mb_substr($s['title'],0,30)) ?></div>
-        <div style="font-size:.65rem;color:rgba(255,255,255,.5);margin-top:2px">❤️ <?= formatViews((int)$s['like_count']) ?></div>
-      </div>
-      <!-- Play icon -->
-      <div style="position:absolute;top:8px;right:8px;background:rgba(0,0,0,.5);border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:.75rem">▶</div>
-    </a>
-    <?php endforeach; ?>
-  </div>
-</div>
-<?php endif; ?>
+  <!-- ── Main Content ─────────────────────────────────────────────────── -->
+  <main class="main-content">
+    
+    <!-- Category Chips -->
+    <div class="filter-bar">
+      <button class="filter-btn <?= !$cat && !$q ? 'active':'' ?>" data-filter="all">All</button>
+      <button class="filter-btn <?= $cat==='veg' ? 'active':'' ?>" data-filter="veg">Veg</button>
+      <button class="filter-btn <?= $cat==='non-veg' ? 'active':'' ?>" data-filter="non-veg">Non-Veg</button>
+      <button class="filter-btn <?= $cat==='trending' ? 'active':'' ?>" data-filter="trending">Trending</button>
+      <button class="filter-btn">Mixes</button>
+      <button class="filter-btn">Cooking</button>
+      <button class="filter-btn">Street Food</button>
+      <button class="filter-btn">Live</button>
+    </div>
 
-<!-- ── Video Grid ─────────────────────────────────────────────────────── -->
-<div class="container">
-  <h2 class="section-title">
-    <?php if ($q): ?>Results for "<?= sanitize($q) ?>"
-    <?php elseif ($cat === 'trending'): ?>🔥 Trending Now
-    <?php elseif ($cat === 'veg'): ?>🥦 Vegetarian Recipes
-    <?php elseif ($cat === 'non-veg'): ?>🍗 Non-Vegetarian Recipes
-    <?php else: ?>Latest Videos<?php endif; ?>
-  </h2>
-
-  <?php if (empty($videos)): ?>
-    <div class="empty-state">
-      <span class="icon">🎬</span>
-      <h3>No videos found</h3>
-      <p><?= $q ? "Try a different search term." : "Be the first to upload a food video!" ?></p>
-      <?php if ($user && $channel): ?>
-        <a href="/cookstream/video/upload.php" class="btn btn-primary" style="margin-top:20px">Upload Video</a>
+    <div class="container">
+      <?php if (empty($videos)): ?>
+        <div class="empty-state">
+          <i class="fas fa-search icon" style="color:#333;"></i>
+          <h3>No results found</h3>
+          <p>Try different keywords or filters.</p>
+        </div>
+      <?php else: ?>
+        <div class="video-grid">
+          <?php foreach ($videos as $v): ?>
+            <a class="video-card" href="/cookstream/video/watch.php?id=<?= $v['id'] ?>">
+              <div class="video-thumb">
+                <?php if ($v['thumbnail_path']): ?>
+                  <img src="/cookstream/<?= sanitize($v['thumbnail_path']) ?>" alt="<?= sanitize($v['title']) ?>" loading="lazy">
+                <?php else: ?>
+                  <div class="thumb-placeholder"><i class="fas fa-utensils" style="font-size:32px;color:#333;"></i></div>
+                <?php endif; ?>
+              </div>
+              <div class="video-info">
+                <div class="v-avatar"><?= strtoupper($v['channel_name'][0]) ?></div>
+                <div class="v-details">
+                  <h3><?= sanitize($v['title']) ?></h3>
+                  <span class="channel-name"><?= sanitize($v['channel_name']) ?> <i class="fas fa-check-circle" style="font-size:10px;"></i></span>
+                  <div class="video-meta">
+                    <span><?= formatViews((int)$v['views']) ?> views</span>
+                    <span><?= timeAgo($v['created_at']) ?></span>
+                  </div>
+                </div>
+              </div>
+            </a>
+          <?php endforeach; ?>
+        </div>
       <?php endif; ?>
     </div>
-  <?php else: ?>
-    <div class="video-grid">
-      <?php foreach ($videos as $v): ?>
-        <a class="video-card" href="/cookstream/video/watch.php?id=<?= $v['id'] ?>">
-          <div class="video-thumb">
-            <?php if ($v['thumbnail_path']): ?>
-              <img src="/cookstream/<?= sanitize($v['thumbnail_path']) ?>" alt="<?= sanitize($v['title']) ?>" loading="lazy">
-            <?php else: ?>
-              <div class="thumb-placeholder">🍽</div>
-            <?php endif; ?>
-            <div class="play-overlay"><span>▶</span></div>
-          </div>
-          <div class="video-info">
-            <h3><?= sanitize($v['title']) ?></h3>
-            <div class="video-meta">
-              <span class="channel-name">📺 <?= sanitize($v['channel_name']) ?></span>
-              <?= vegBadge($v['category']) ?>
-            </div>
-            <div class="video-meta" style="margin-top:6px">
-              <span>👁 <?= formatViews((int)$v['views']) ?> views</span>
-              <span><?= timeAgo($v['created_at']) ?></span>
-            </div>
-          </div>
-        </a>
-      <?php endforeach; ?>
-    </div>
-  <?php endif; ?>
+  </main>
 </div>
 
 <script src="/cookstream/assets/js/main.js"></script>
