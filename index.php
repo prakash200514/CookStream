@@ -64,9 +64,8 @@ $recentShorts = getAllShorts($conn, 10);
     <div class="nav-hamburger" id="nav-hamburger">
       <i class="fas fa-bars"></i>
     </div>
-    <a class="navbar-brand" href="/cookstream/" style="font-size:18px;">
-      <i class="fas fa-utensils" style="color:var(--accent);font-size:22px;"></i>
-      <span class="logo-text">CookStream</span>
+    <a class="navbar-brand" href="/cookstream/">
+      <img src="/cookstream/assets/img/logo.png" alt="CookStream Logo">
     </a>
   </div>
 
@@ -81,8 +80,15 @@ $recentShorts = getAllShorts($conn, 10);
 
   <div class="nav-actions">
     <?php if ($user): ?>
-      <a href="/cookstream/video/upload.php" class="btn-icon" title="Create"><i class="fas fa-video"></i></a>
-      <button class="btn-icon" title="Notifications"><i class="far fa-bell"></i></button>
+      <a href="/cookstream/video/upload.php" class="btn-create">
+        <i class="fas fa-plus"></i>
+        <span>Create</span>
+      </a>
+      
+      <div class="notification-wrap">
+        <i class="far fa-bell"></i>
+        <div class="notification-badge">9+</div>
+      </div>
       
       <div class="user-menu-wrap">
         <div class="avatar" id="avatar-toggle"><?= strtoupper($user['name'][0]) ?></div>
@@ -96,6 +102,10 @@ $recentShorts = getAllShorts($conn, 10);
         </div>
       </div>
     <?php else: ?>
+      <a href="/cookstream/video/upload.php" class="btn-create">
+        <i class="fas fa-plus"></i>
+        <span>Create</span>
+      </a>
       <a href="/cookstream/auth/login.php" class="btn btn-outline btn-sm" style="border-radius:20px;border-color:#333;color:#3ea6ff;">
         <i class="far fa-user-circle" style="margin-right:8px;"></i> Sign in
       </a>
